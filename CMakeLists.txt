@@ -61,7 +61,7 @@
 	FindPython3 requires Cmake v3.12
 	ARCH_INDEPENDENT option of write_basic_package_version_file() requires Cmake v3.14
 ]]
-cmake_minimum_required(VERSION 3.14.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13.0 FATAL_ERROR)
 
 # Get the CPPHTTPLIB_VERSION value and use it as a version
 # This gets the string with the CPPHTTPLIB_VERSION value from the header.
@@ -243,49 +243,6 @@ configure_package_config_file("${PROJECT_NAME}Config.cmake.in"
 	INSTALL_DESTINATION "${_TARGET_INSTALL_CMAKEDIR}"
 	# Passes the includedir install path
 	PATH_VARS CMAKE_INSTALL_FULL_INCLUDEDIR
-)
-
-if(HTTPLIB_COMPILE)
-	write_basic_package_version_file("${PROJECT_NAME}ConfigVersion.cmake"
-		# Example: if you find_package(httplib 0.5.4)
-		# then anything >= 0.5 and <= 1.0 is accepted
-		COMPATIBILITY SameMinorVersion
-	)
-else()
-	write_basic_package_version_file("${PROJECT_NAME}ConfigVersion.cmake"
-		# Example: if you find_package(httplib 0.5.4)
-		# then anything >= 0.5 and <= 1.0 is accepted
-		COMPATIBILITY SameMinorVersion
-		# Tells Cmake that it's a header-only lib
-		# Mildly useful for end-users :)
-		ARCH_INDEPENDENT
-	)
-endif()
-
-# Creates the export httplibTargets.cmake
-# This is strictly what holds compilation requirements
-# and linkage information (doesn't find deps though).
-install(TARGETS ${PROJECT_NAME}
-	EXPORT httplibTargets
-)
-
-install(FILES "${_httplib_build_includedir}/httplib.h" TYPE INCLUDE)
-
-install(FILES
-		"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-		"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-		# Install it so it can be used later by the httplibConfig.cmake file.
-		# Put it in the same dir as our config file instead of a global path so we don't potentially stomp on other packages.
-		"${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindBrotli.cmake"
-	DESTINATION ${_TARGET_INSTALL_CMAKEDIR}
-)
-
-# NOTE: This path changes depending on if it's on Windows or Linux
-install(EXPORT httplibTargets
-	# Puts the targets into the httplib namespace
-	# So this makes httplib::httplib linkable after doing find_package(httplib)
-	NAMESPACE ${PROJECT_NAME}::
-	DESTINATION ${_TARGET_INSTALL_CMAKEDIR}
 )
 
 if(HTTPLIB_TEST)
